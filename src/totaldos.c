@@ -87,7 +87,9 @@ void WriteTotalDos() {
 			
 		}
 		
-	}	
+	}
+	
+	fclose(fp);	
 	
 }
 
