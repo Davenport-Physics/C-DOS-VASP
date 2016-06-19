@@ -26,62 +26,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum {
-	
-	FALSE = 0,
-	TRUE
-	
-} bool;
+#include <sys/stat.h>
 
-static char TotalDosFile[256]   = "doscar-files/TotalDos";
-static char PartialDosFile[256] = "doscar-files/PartialDosFile";
+#include "share.h"
+#include "totaldos.h"
+#include "partialdos.h"
 
-static int IterationsPerSection = 0;
-static int TotalNumberOfAtoms   = 0;
-
-static double FermiEnergy        = 0.0;
-static double **TotalDosArray    = NULL;
-static double ***PartialDosArray = NULL;
-
-static FILE *DOSCAR_fp;
-
-void initialize();
-void initializeTotalDosArray();
-void initializePartialDosArray();
-void initializeNumberOfAtoms();
+void InitializeProgramState();
 void MakeDosDirectories();
 
-void GetTotalDos();
-void GetPartialDos();
-void GetTotalNumberOfAtoms(char buffer[256]);
-
-void WriteTotalDos();
-void WritePartialDos();
-
+int DetermineTotalNumberOfAtoms(char buffer[256]);
+int initializeNumberOfAtoms();
 bool CheckIfStringContainsNumber(char buffer[256]);
 
 int main(int argc, char **argv)
 {
 	
-	initialize();
+	InitializeProgramState();
 	
-	GetTotalDos();
-	GetPartialDos();
+	ReadTotalDos();
+	ReadPartialDos();
 	
 	WriteTotalDos();
 	WritePartialDos();
 	
-	free(TotalDosArray);
-	free(PartialDosArray);
-	
-	fclose(DOSCAR_fp);
+	CloseDoscarFilePointer();
+	free_TotalDosArray();
+	free_PartialDosArray();
 	
 	return 0;
 }
 
-void initialize() {
+void InitializeProgramState() {
 	
-	DOSCAR_fp = fopen("DOSCAR", "r");
+	InitializeDoscarFilePointer("DOSCAR", "r");
+	FILE *DOSCAR_fp = GetDoscarFilePointer();
 	
 	if (DOSCAR_fp == NULL) {
 	
@@ -97,50 +76,18 @@ void initialize() {
 	for (i = 0;i < 5;i++)
 		fgets(buffer, 256, DOSCAR_fp);
 		
+	int IterationsPerSection;
+	double FermiEnergy;
 	fscanf(DOSCAR_fp, "%*f %*f %d %lf %*f\n", &IterationsPerSection, &FermiEnergy);
 	
-	initializeTotalDosArray();
-	initializeNumberOfAtoms();
-	initializePartialDosArray();
+	SetStandardValues(IterationsPerSection, initializeNumberOfAtoms());
+	
+	initialize_TotalDosArray();
+	initialize_PartialDosArray();
 	
 }
 
-void initializeTotalDosArray() {
-	
-	TotalDosArray = malloc(IterationsPerSection * sizeof(double *));
-	int i;
-	for (i = 0; i < IterationsPerSection;i++) {
-	
-		TotalDosArray[i] = malloc(3 * sizeof(double));
-		
-	}
-	
-	
-}
-
-void initializePartialDosArray() {
-	
-	int y, x;
-	
-	PartialDosArray = malloc(TotalNumberOfAtoms * sizeof(double **));
-	for (y = 0;y < TotalNumberOfAtoms;y++) {
-	
-		PartialDosArray[y] = malloc(IterationsPerSection*sizeof(double *));
-		
-	}
-	for (y = 0;y < TotalNumberOfAtoms;y++) {
-	
-		for (x = 0;x < IterationsPerSection;x++) {
-		
-			PartialDosArray[y][x] = malloc(7 * sizeof(double));
-		
-		}
-		
-	}
-	
-	
-}
-void initializeNumberOfAtoms() {
+int initializeNumberOfAtoms() {
 	
 	FILE *fp = fopen("POSCAR", "r");
 	
@@ -153,12 +100,12 @@ void initializeNumberOfAtoms() {
 	fgets(buffer, 256, fp);
 	if (CheckIfStringContainsNumber(buffer) == TRUE) {
 		
-		GetTotalNumberOfAtoms(buffer);
+		return GetTotalNumberOfAtoms(buffer);
 		
 	} else {
 	
 		fgets(buffer, 256, fp);
-		GetTotalNumberOfAtoms(buffer);
+		return GetTotalNumberOfAtoms(buffer);
 		
 	}	
 	fclose(fp);
@@ -167,54 +114,15 @@ void initializeNumberOfAtoms() {
 
 void MakeDosDirectories() {
 
-	FILE *fp = popen("mkdir doscar-files", "r");
-	
-	pclose(fp);
+	mkdir("doscar-files", S_IRWXU | S_IRWXG | S_IRWXO);
 	
 }
 
-void GetTotalDos() {
-	
-	int i;
-	for (i = 0;i < IterationsPerSection;i++) {
-	
-		fscanf(DOSCAR_fp, "%lf %lf %lf %*f %*f\n", &TotalDosArray[i][0], &TotalDosArray[i][1], &TotalDosArray[i][2]);
-		TotalDosArray[i][0] -= FermiEnergy;
-		TotalDosArray[i][2]  = -TotalDosArray[i][2]; //Spin-down is considered negative
-	}
-	
-}
+int DetermineTotalNumberOfAtoms(char buffer[256]) {
 
-void GetPartialDos() {
-
-	int z,y;
-	
-	char buffer[256];
-	for (z = 0;z < TotalNumberOfAtoms;z++) {
-		
-		fgets(buffer, 256, DOSCAR_fp);
-		for (y = 0;y < IterationsPerSection;y++) {
-		
-			fscanf(DOSCAR_fp, "%lf%lf%lf%lf%lf%lf%lf", 
-					&PartialDosArray[z][y][0],
-					&PartialDosArray[z][y][1],
-					&PartialDosArray[z][y][2],
-					&PartialDosArray[z][y][3],
-					&PartialDosArray[z][y][4],
-					&PartialDosArray[z][y][5],
-					&PartialDosArray[z][y][6]);
-			
-		}
-		
-	}
-	
-	
-}
-
-void GetTotalNumberOfAtoms(char buffer[256]) {
+	int TotalNumberOfAtoms = 0;
 
 	char *pointer = strtok(buffer, " ");
-	
 	while (pointer != NULL) {
 	
 		TotalNumberOfAtoms += atoi(pointer);
@@ -222,69 +130,7 @@ void GetTotalNumberOfAtoms(char buffer[256]) {
 		
 	}
 	
-}
-
-void WriteTotalDos() {
-
-	FILE *fp = fopen(TotalDosFile, "w");
-	
-	if (fp == NULL) {
-	
-		printf("Couldn't open up %s. Halting Execution.\n", TotalDosFile);
-		exit(1);
-		
-	}
-	
-	int i;
-	for (i = 0;i < IterationsPerSection;i++) {
-	
-		if ((i + 1) < IterationsPerSection) {
-			
-			fprintf(fp, "%lf\t%lf\t%lf\n", TotalDosArray[i][0], TotalDosArray[i][1], TotalDosArray[i][2]);
-			
-		} else {
-			
-			fprintf(fp, "%lf\t%lf\t%lf", TotalDosArray[i][0], TotalDosArray[i][1], TotalDosArray[i][2]);
-			
-		}
-		
-	}
-	
-}
-void WritePartialDos() {
-	
-	char StringInt[10];
-	char buffer[512];
-	
-	int z;
-	for (z = 0;z < TotalNumberOfAtoms;z++) {
-		
-		strncpy(buffer, PartialDosFile, 256);
-		sprintf(StringInt, "%d", z);
-		strncat(buffer, StringInt, 10);
-		
-		FILE *fp = fopen(buffer, "w");
-		
-		int y, x;
-		for (y = 0;y < IterationsPerSection;y++) {
-		
-			for (x = 0;x < 7;x++) {
-			
-				if ((x+1) != 7)
-					fprintf(fp, "%lf\t", PartialDosArray[z][y][x]);
-				else
-					fprintf(fp, "%lf", PartialDosArray[z][y][x]);
-				
-			}
-			if ((y+1) != IterationsPerSection)
-				fprintf(fp, "\n");
-				
-			
-		}
-		
-		fclose(fp);
-		
-	}
+	return TotalNumberOfAtoms;
 	
 }
 
