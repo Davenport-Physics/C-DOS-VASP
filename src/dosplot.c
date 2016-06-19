@@ -119,7 +119,11 @@ int initializeNumberOfAtoms() {
 
 void MakeDosDirectories() {
 
+#if __unix
 	mkdir("doscar-files", S_IRWXU | S_IRWXG | S_IRWXO);
+#elif __WIN32
+	mkdir("doscar-files");
+#endif
 	
 }
 

@@ -29,8 +29,13 @@ static FILE *DOSCAR_fp = NULL;
 static int IterationsPerSection = 0;
 static int TotalNumberOfAtoms   = 0;
 
+#if __unix
 static char *TotalDosFile   = "doscar-files/TotalDos";
 static char *PartialDosFile = "doscar-files/PartialDosFile";
+#elif __WIN32
+static char *TotalDosFile   = "doscar-files\\TotalDos";
+static char *PartialDosFile = "doscar-files\\PartialDosFile";
+#endif
 
 static double FermiEnergy = 0.0;
 
@@ -50,6 +55,9 @@ double GetFermiEnergy() {
 }
 
 void InitializeDoscarFilePointer(char *string, char *options) {
+	
+	if (DOSCAR_fp != NULL)
+		printf("Was InitializeDoscarFilePointer called more than once?\n");
 	
 	DOSCAR_fp = fopen(string, options);
 	
