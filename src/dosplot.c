@@ -100,15 +100,16 @@ int initializeNumberOfAtoms() {
 	fgets(buffer, 256, fp);
 	if (CheckIfStringContainsNumber(buffer) == TRUE) {
 		
+		fclose(fp);
 		return GetTotalNumberOfAtoms(buffer);
 		
 	} else {
 	
 		fgets(buffer, 256, fp);
+		fclose(fp);
 		return GetTotalNumberOfAtoms(buffer);
 		
 	}	
-	fclose(fp);
 
 }
 
