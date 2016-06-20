@@ -30,6 +30,8 @@
 
 static double ***PartialDosArray = NULL;
 
+static void WriteAddedPartialDos(double **AddPartialDosArray, int IterationsPerSection);
+
 void initialize_PartialDosArray() {
 
 	int y, x;
@@ -136,6 +138,52 @@ void WritePartialDos() {
 		fclose(fp);
 		
 	}
+	
+}
+
+void AddPartialDos(int *list, int list_length) {
+	
+	double **AddedPartialDosArray = NULL;
+	
+	int IterationsPerSection = GetIterationsPerSection();
+	
+	AddedPartialDosArray = malloc(IterationsPerSection * sizeof(double *));
+	
+	int z,y,x;
+	for (y = 0;y < IterationsPerSection;y++) {
+	
+		AddedPartialDosArray[y]    = malloc(7 * sizeof(double));
+		AddedPartialDosArray[y][0] = PartialDosArray[0][y][0];
+		for (x = 1;x < 7;x++) {
+			
+			AddedPartialDosArray[y][x] = 0.0;
+			
+		}
+	}
+	
+	int i;
+	for (i = 0;i < list_length;i++) {
+		
+		z = list[i];
+		for (y = 0;y < IterationsPerSection;y++) {
+		
+			for (x = 0;x < 7;x++) {
+				
+				AddedPartialDosArray[y][x] += PartialDosArray[z][y][x];
+				
+			}
+			
+		}
+		
+	}
+	
+	free(AddedPartialDosArray);
+	
+}
+
+static void WriteAddedPartialDos(double **AddPartialDosArray, int IterationsPerSection) {
+
+	
 	
 }
 

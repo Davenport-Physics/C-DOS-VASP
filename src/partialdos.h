@@ -30,6 +30,8 @@ void initialize_PartialDosArray();
 void ReadPartialDos();
 void WritePartialDos();
 
+void AddPartialDos(int *list, int list_length);
+
 void free_PartialDosArray();
 
 #endif
