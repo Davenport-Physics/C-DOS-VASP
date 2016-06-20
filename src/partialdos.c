@@ -186,7 +186,7 @@ void AddPartialDos(int *list, int list_length) {
 static void WriteAddedPartialDos(double **AddedPartialDosArray, int IterationsPerSection) {
 
 	char filename[512] = {'\0'};
-	printf("AddedPartialDosString = %s\n", AddedPartialDosString);
+	char *AddedPartialDosString = GetAddedPartialDosString();
 #if __unix
 	strncpy(filename, "doscar-files/AddedPartialDos (", 30);
 #elif __WIN32
