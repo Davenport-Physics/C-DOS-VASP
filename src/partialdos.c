@@ -69,21 +69,21 @@ void ReadPartialDos() {
 	for (z = 0;z < TotalNumberOfAtoms;z++) {
 		
 		fgets(buffer, 256, DOSCAR_fp);
-		for (y = 0;y < IterationsPerSection;y++) {
+		for (y = 0;y < IterationsPerSection-1;y++) {
 			
-			fscanf(DOSCAR_fp, "%s%s%s%s%s%s%s",
-					TempStrings[0],
+			fscanf(DOSCAR_fp, "%lf%s%s%s%s%s%s",
+					&PartialDosArray[z][y][0],
 					TempStrings[1],
 					TempStrings[2],
 					TempStrings[3],
 					TempStrings[4],
 					TempStrings[5],
 					TempStrings[6]);
-		
-			for (x = 0;x < 7;x++) {
+				
+			PartialDosArray[z][y][0] -= FermiEnergy;
+			for (x = 1;x < 7;x++) {
 				
 				PartialDosArray[z][y][x] = GetCorrectString(TempStrings[x]);
-				PartialDosArray[z][y][x] -= FermiEnergy;
 				
 			}
 			

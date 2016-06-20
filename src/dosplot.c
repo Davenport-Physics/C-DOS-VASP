@@ -84,6 +84,7 @@ void InitializeProgramState() {
 	double FermiEnergy;
 	fscanf(DOSCAR_fp, "%*f %*f %d %lf %*f\n", &IterationsPerSection, &FermiEnergy);
 	
+	SetFermiEnergy(FermiEnergy);
 	SetStandardValues(IterationsPerSection, initializeNumberOfAtoms());
 	
 	initialize_TotalDosArray();
@@ -105,13 +106,13 @@ int initializeNumberOfAtoms() {
 	if (CheckIfStringContainsNumber(buffer) == TRUE) {
 		
 		fclose(fp);
-		return GetTotalNumberOfAtoms(buffer);
+		return DetermineTotalNumberOfAtoms(buffer);
 		
 	} else {
 	
 		fgets(buffer, 256, fp);
 		fclose(fp);
-		return GetTotalNumberOfAtoms(buffer);
+		return DetermineTotalNumberOfAtoms(buffer);
 		
 	}	
 

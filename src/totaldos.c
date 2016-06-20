@@ -53,9 +53,9 @@ void ReadTotalDos() {
 	char TempStrings[3][256];
 	for (i = 0;i < IterationsPerSection;i++) {
 		
-		fscanf(DOSCAR_fp, "%s %s %s\n", TempStrings[0], TempStrings[1], TempStrings[2]);
+		fscanf(DOSCAR_fp, "%lf %s %s %*s %*s\n", &TotalDosArray[i][0], TempStrings[1], TempStrings[2]);
 		
-		for (x = 0;x < 3;x++) {
+		for (x = 1;x < 3;x++) {
 		
 			TotalDosArray[i][x] = GetCorrectString(TempStrings[x]);
 			
