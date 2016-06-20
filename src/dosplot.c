@@ -96,6 +96,20 @@ int initializeNumberOfAtoms() {
 	
 	FILE *fp = fopen("POSCAR", "r");
 	
+	if (fp == NULL) {
+	
+		printf("POSCAR File not found. Trying CONTCAR\n");
+		fp = fopen("CONTCAR", "r");
+		
+		if (fp == NULL) {
+		
+			printf("CONTCAR File was not found. Halting Execution\n");
+			exit(1);
+			
+		}
+		
+	}
+	
 	char buffer[256];
 	
 	int i;
