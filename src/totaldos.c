@@ -49,10 +49,17 @@ void ReadTotalDos() {
 	int    IterationsPerSection = GetIterationsPerSection();
 	double FermiEnergy          = GetFermiEnergy();
 
-	int i;
+	int i,x;
+	char TempStrings[3][256];
 	for (i = 0;i < IterationsPerSection;i++) {
-	
-		fscanf(DOSCAR_fp, "%lf %lf %lf %*f %*f\n", &TotalDosArray[i][0], &TotalDosArray[i][1], &TotalDosArray[i][2]);
+		
+		fscanf(DOSCAR_fp, "%s %s %s\n", TempStrings[0], TempStrings[1], TempStrings[2]);
+		
+		for (x = 0;x < 3;x++) {
+		
+			TotalDosArray[i][x] = GetCorrectString(TempStrings[x]);
+			
+		}
 		TotalDosArray[i][0] -= FermiEnergy;
 		TotalDosArray[i][2]  = -TotalDosArray[i][2]; //Spin-down is considered negative
 	}	

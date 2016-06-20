@@ -21,6 +21,8 @@
  * 
  */
 
+#include <stdlib.h>
+#include <string.h>
 
 #include "share.h"
 
@@ -109,3 +111,22 @@ char *GetPartialDosFile() {
 	
 }
 
+double GetCorrectString(char string[256]) {
+
+	char *position = (char *)memchr(string, 'E', strlen(string));
+	
+	if (position == NULL) {
+		
+		char buffer[512];
+		char *pointer = strtok(string, "+-");
+		
+		strncpy(buffer, pointer, strlen(pointer));
+		strncat(buffer, "E", 1);
+		pointer = strtok(NULL, "+-");
+		strncat(buffer, pointer, strlen(pointer));
+		
+		return atof(buffer);
+	}
+	return atof(string);
+	
+}

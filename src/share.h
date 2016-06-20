@@ -48,7 +48,7 @@ int GetTotalNumberOfAtoms();
 char *GetTotalDosFile();
 char *GetPartialDosFile();
 
-
+double GetCorrectString(char string[256]);
 
 
 #endif
