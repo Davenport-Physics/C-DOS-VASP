@@ -28,37 +28,67 @@
 
 #include <sys/stat.h>
 
+#include "arg.h"
 #include "share.h"
 #include "totaldos.h"
 #include "partialdos.h"
 
 static char *ProgramVersion = ".22";
 
-void InitializeProgramState();
-void MakeDosDirectories();
+static void InitializeProgramState();
+static void MakeDosDirectories();
 
-int DetermineTotalNumberOfAtoms(char buffer[256]);
-int initializeNumberOfAtoms();
-bool CheckIfStringContainsNumber(char buffer[256]);
+static int DetermineTotalNumberOfAtoms(char buffer[256]);
+static int initializeNumberOfAtoms();
+static bool CheckIfStringContainsNumber(char buffer[256]);
+
+static void RunProgram();
+static void FreeProgramResources();
 
 int main(int argc, char **argv)
 {
 	
 	printf("Version %s\n", ProgramVersion);
 	
-	InitializeProgramState();
+	if (argc > 1)
+		ParseArgs(argc, argv);
 	
+	InitializeProgramState();
+	RunProgram();
+	FreeProgramResources();
+	
+#if __WIN32
+
+	char buffer[256];
+	fgets(buffer, 256, stdin);
+
+#endif
+	
+	return 0;
+}
+
+static void RunProgram() {
+
 	ReadTotalDos();
 	WriteTotalDos();
 	
 	ReadPartialDos();
 	WritePartialDos();
 	
+	if (GetPartialListLength() > 0) {
+		
+		AddPartialDos(GetPartialList(), GetPartialListLength());
+		
+	}
+	
+}
+static void FreeProgramResources() {
+
 	CloseDoscarFilePointer();
 	free_TotalDosArray();
 	free_PartialDosArray();
-	
-	return 0;
+	free_ArgResources();
+
 }
 
 void InitializeProgramState() {

@@ -1,7 +1,7 @@
 /*
- * share.h
+ * arg.h
  * 
- * Copyright 2016 Emma Davenport <Davenport.physics@gmail.com>
+ * Copyright 2016 Emma Davenport <Davenport.Physics@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,41 +22,14 @@
  */
 
 
-#ifndef SHARE_H
-#define SHARE_H
+#ifndef ARG_H
+#define ARG_H
 
-#include <stdio.h>
+void ParseArgs(int argc, char *argv[]);
 
-typedef enum {
-	
-	FALSE = 0,
-	TRUE
-	
-} bool;
+int *GetPartialList();
+int GetPartialListLength();
 
-typedef struct {
-	
-	char *string;
-	void (*Function)(int argc, char *argv[], int index);
-	
-} StringFunction;
-
-void SetFermiEnergy(double FE);
-double GetFermiEnergy();
-
-void InitializeDoscarFilePointer(char *string, char *options);
-FILE *GetDoscarFilePointer();
-void CloseDoscarFilePointer();
-
-void SetStandardValues(int IPerSection,int TotNumberOfAtoms);
-int GetIterationsPerSection();
-int GetTotalNumberOfAtoms();
-
-char *GetTotalDosFile();
-char *GetPartialDosFile();
-
-double GetCorrectString(char string[256]);
-
+void free_ArgResources();
 
 #endif
-
