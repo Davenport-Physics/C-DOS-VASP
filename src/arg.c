@@ -115,7 +115,6 @@ static void arg_add(int argc, char *argv[], int index) {
 }
 static void SetAddedPartialDosString(char *string) {
 	
-	printf("AddedPartialDosString = %s\n", string);
 	strncpy(AddedPartialDosString, string, strlen(string));
 	
 }

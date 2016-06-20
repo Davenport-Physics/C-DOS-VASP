@@ -50,7 +50,6 @@ void initialize_PartialDosArray() {
 		for (x = 0;x < IterationsPerSection;x++) {
 		
 			PartialDosArray[y][x] = malloc(7 * sizeof(double));
-		
 		}
 		
 	}
@@ -89,10 +88,9 @@ void ReadPartialDos() {
 				PartialDosArray[z][y][x] = GetCorrectString(TempStrings[x]);
 				
 			}
-			//Spin Down components are considered negative
 			for (x = 2;x < 7;x+=2) {
 			
-				PartialDosArray[z][y][x] = -PartialDosArray[x][y][z];
+				PartialDosArray[z][y][x] = -PartialDosArray[z][y][x];
 				
 			}
 			
@@ -188,7 +186,6 @@ void AddPartialDos(int *list, int list_length) {
 static void WriteAddedPartialDos(double **AddedPartialDosArray, int IterationsPerSection) {
 
 	char filename[512] = {'\0'};
-	char *AddedPartialDosString = GetAddedPartialDosString();
 	printf("AddedPartialDosString = %s\n", AddedPartialDosString);
 #if __unix
 	strncpy(filename, "doscar-files/AddedPartialDos (", 30);
@@ -198,7 +195,6 @@ static void WriteAddedPartialDos(double **AddedPartialDosArray, int IterationsPe
 	strncat(filename, AddedPartialDosString, strlen(AddedPartialDosString));
 	strncat(filename, ")", 1);
 	
-	printf("Filename %s", filename);
 	FILE *TempFilePointer = fopen(filename, "w");
 	
 	CheckForNullPointer(TempFilePointer, 
