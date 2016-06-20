@@ -32,7 +32,7 @@
 #include "totaldos.h"
 #include "partialdos.h"
 
-static char *ProgramVersion = ".1";
+static char *ProgramVersion = ".2";
 
 void InitializeProgramState();
 void MakeDosDirectories();
