@@ -32,7 +32,7 @@
 #include "totaldos.h"
 #include "partialdos.h"
 
-static char *ProgramVersion = ".21";
+static char *ProgramVersion = ".22";
 
 void InitializeProgramState();
 void MakeDosDirectories();
@@ -44,7 +44,7 @@ bool CheckIfStringContainsNumber(char buffer[256]);
 int main(int argc, char **argv)
 {
 	
-	printf("Version %s", ProgramVersion);
+	printf("Version %s\n", ProgramVersion);
 	
 	InitializeProgramState();
 	
