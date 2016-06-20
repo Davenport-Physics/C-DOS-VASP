@@ -1,3 +1,10 @@
+Version .3
+~~~~~~~~~~~
+
+-Feature:Program can now add multiple partial dos files to make a single dos file with a total contribution between a subset of atoms.
+-Fix:Partial Dos code now correctly makes Spin Down orbitals negative
+
+
 Version .22
 ~~~~~~~~~~~
 
