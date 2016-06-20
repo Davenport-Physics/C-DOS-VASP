@@ -30,6 +30,8 @@ void ParseArgs(int argc, char *argv[]);
 int *GetPartialList();
 int GetPartialListLength();
 
+char *GetAddedPartialDosString();
+
 void free_ArgResources();
 
 #endif

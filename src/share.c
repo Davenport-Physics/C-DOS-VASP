@@ -41,6 +41,25 @@ static char *PartialDosFile = "doscar-files\\PartialDosFile";
 
 static double FermiEnergy = 0.0;
 
+void CheckForNullPointer(void *p, char *message, bool HaltExecution) {
+
+	if (p != NULL) {
+	
+		return;
+		
+	}
+	
+	printf("%s\n", message);
+	
+	if (HaltExecution == TRUE) {
+	
+		printf("Halting Execution\n");
+		exit(1);
+		
+	}
+	
+}
+
 void SetFermiEnergy(double FE) {
 	
 	if (FermiEnergy != 0.0)

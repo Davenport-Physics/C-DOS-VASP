@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "partialdos.h"
+#include "arg.h"
 #include "share.h"
 
 static double ***PartialDosArray = NULL;
@@ -177,13 +178,43 @@ void AddPartialDos(int *list, int list_length) {
 		
 	}
 	
+	WriteAddedPartialDos(AddedPartialDosArray, IterationsPerSection);
+	
 	free(AddedPartialDosArray);
 	
 }
 
-static void WriteAddedPartialDos(double **AddPartialDosArray, int IterationsPerSection) {
+static void WriteAddedPartialDos(double **AddedPartialDosArray, int IterationsPerSection) {
 
+	char filename[512];
+	char *AddedPartialDosString = GetAddedPartialDosString();
+	strncpy(filename, "AddedPartialDos (", 17);
+	strncat(filename, AddedPartialDosString, strlen(AddedPartialDosString));
+	strncat(filename, ")", 1);
 	
+	FILE *TempFilePointer = fopen(filename, "w");
+	
+	CheckForNullPointer(TempFilePointer, 
+						"Could not write to AddedPartialDosFile", 
+						TRUE);
+						
+	int y,x;
+	for (y = 0;y < IterationsPerSection;y++) {
+	
+		for (x = 0;x < 7;x++) {
+		
+			if ((x + 1) != 7)
+				fprintf(TempFilePointer, "%lf\t", AddedPartialDosArray[y][x]);
+			else
+				fprintf(TempFilePointer, "%lf", AddedPartialDosArray[y][x]);
+			
+		}
+		if ((y + 1) != IterationsPerSection)
+			fprintf(TempFilePointer, "\n");
+		
+	}
+	
+	fclose(TempFilePointer);
 	
 }
 

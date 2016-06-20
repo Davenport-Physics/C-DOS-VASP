@@ -31,9 +31,12 @@
 #define ARGLISTLENGTH 1
 
 static void arg_add(int argc, char *argv[], int index);
+static void SetAddedPartialDosString(char *string);
 
 static int *PartialList       = NULL;
 static int  PartialListLength = 0;
+
+static char *AddedPartialDosString = NULL;
 
 static const StringFunction ArgList[ARGLISTLENGTH] = 
 {{"-add", &arg_add}};
@@ -60,7 +63,45 @@ void ParseArgs(int argc, char *argv[]) {
 
 static void arg_add(int argc, char *argv[], int index) {
 	
+	if ((index+1) >= argc) {
 	
+		printf("Error: Did you pass appropriate arugments?\n");
+		printf("Halting Execution\n");
+		exit(1);
+		
+	}
+	char *DelimeterPointer = (char *)memchr(argv[index], '-', strlen(argv[index]));
+	
+	CheckForNullPointer(DelimeterPointer, 
+						"Error: Didn't pass appropriate argument\n",
+						TRUE);
+						
+	int start = 0, end = 0;
+	char *TempPointer = strtok(argv[index], "-");
+	CheckForNullPointer(TempPointer, 
+						"Something went wrong with strtok",
+						TRUE);
+
+	start = atoi(TempPointer);
+	TempPointer = strtok(NULL, "-");
+	CheckForNullPointer(TempPointer, 
+						"Something went wrong with strtok",
+						TRUE);
+	
+	end = atoi(TempPointer);
+	PartialListLength = end - start;
+	PartialList       = malloc(PartialListLength * sizeof(int));
+	
+	AddedPartialDosString = malloc(256 * sizeof(char));
+	SetAddedPartialDosString(argv[index]);
+	
+	int i;
+	for (i = 0;i < PartialListLength;i++)
+		PartialList[i] = (start+i);
+}
+static void SetAddedPartialDosString(char *string) {
+	
+	strncpy(AddedPartialDosString, string, strlen(string));
 	
 }
 
@@ -75,9 +116,14 @@ int GetPartialListLength() {
 	return PartialListLength;
 	
 }
+char *GetAddedPartialDosString() {
+	
+	return AddedPartialDosString;
+	
+}
 
 void free_ArgResources() {
 	
-	
-	
+	free(PartialList);
+	free(AddedPartialDosString);
 }

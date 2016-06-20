@@ -41,20 +41,20 @@ typedef struct {
 	
 } StringFunction;
 
+void CheckForNullPointer(void *p, char *message, bool HaltExecution);
+
 void SetFermiEnergy(double FE);
-double GetFermiEnergy();
-
-void InitializeDoscarFilePointer(char *string, char *options);
-FILE *GetDoscarFilePointer();
-void CloseDoscarFilePointer();
-
 void SetStandardValues(int IPerSection,int TotNumberOfAtoms);
-int GetIterationsPerSection();
-int GetTotalNumberOfAtoms();
 
-char *GetTotalDosFile();
-char *GetPartialDosFile();
+void  InitializeDoscarFilePointer(char *string, char *options);
+FILE *GetDoscarFilePointer();
+void  CloseDoscarFilePointer();
 
+int    GetIterationsPerSection();
+int    GetTotalNumberOfAtoms();
+char  *GetTotalDosFile();
+char  *GetPartialDosFile();
+double GetFermiEnergy();
 double GetCorrectString(char string[256]);
 
 
