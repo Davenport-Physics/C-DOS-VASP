@@ -48,7 +48,7 @@ static void FreeProgramResources();
 int main(int argc, char **argv)
 {
 	
-	printf("Version %s\n", ProgramVersion);
+	printf("CDOSVASP Version %s\n", ProgramVersion);
 	
 	if (argc > 1)
 		ParseArgs(argc, argv);
@@ -57,12 +57,7 @@ int main(int argc, char **argv)
 	RunProgram();
 	FreeProgramResources();
 	
-#if __WIN32
-
-	char buffer[256];
-	fgets(buffer, 256, stdin);
-
-#endif
+	printf("Program has finished successfully.\n");
 	
 	return 0;
 }
@@ -96,12 +91,7 @@ void InitializeProgramState() {
 	InitializeDoscarFilePointer("DOSCAR", "r");
 	FILE *DOSCAR_fp = GetDoscarFilePointer();
 	
-	if (DOSCAR_fp == NULL) {
-	
-		printf("DOSCAR file not found. Halting execution.\n");
-		exit(1);
-		
-	}
+	CheckForNullPointer(DOSCAR_fp, "DOSCAR file not found.", TRUE);
 	
 	MakeDosDirectories();
 	

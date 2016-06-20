@@ -70,37 +70,52 @@ static void arg_add(int argc, char *argv[], int index) {
 		exit(1);
 		
 	}
-	char *DelimeterPointer = (char *)memchr(argv[index], '-', strlen(argv[index]));
+	
+	/*
+	 * The following three lines of code were initially at the end of
+	 * the function, however strtok alters the value of argv[index+1]
+	 * apparently, leading to some bug issues down the line.
+	 * 
+	 * Placing at the beginning doesn't fundamentally change how the
+	 * program is ran, since if the user didn't pass a good argument
+	 * the program halts regardless.
+	 * 
+	 * */
+	AddedPartialDosString = malloc(512 * sizeof(char));
+	memset(AddedPartialDosString,0, 512);
+	SetAddedPartialDosString(argv[index+1]);
+	
+	char *DelimeterPointer = (char *)memchr(argv[index+1], '-', strlen(argv[index]));
 	
 	CheckForNullPointer(DelimeterPointer, 
 						"Error: Didn't pass appropriate argument\n",
 						TRUE);
 						
 	int start = 0, end = 0;
-	char *TempPointer = strtok(argv[index], "-");
+	char *TempPointer = strtok(argv[index+1], "-");
 	CheckForNullPointer(TempPointer, 
-						"Something went wrong with strtok",
+						"Something went wrong with strtok 1",
 						TRUE);
 
 	start = atoi(TempPointer);
 	TempPointer = strtok(NULL, "-");
 	CheckForNullPointer(TempPointer, 
-						"Something went wrong with strtok",
+						"Something went wrong with strtok 2",
 						TRUE);
 	
 	end = atoi(TempPointer);
+	
 	PartialListLength = end - start;
 	PartialList       = malloc(PartialListLength * sizeof(int));
-	
-	AddedPartialDosString = malloc(256 * sizeof(char));
-	SetAddedPartialDosString(argv[index]);
 	
 	int i;
 	for (i = 0;i < PartialListLength;i++)
 		PartialList[i] = (start+i);
+		
 }
 static void SetAddedPartialDosString(char *string) {
 	
+	printf("AddedPartialDosString = %s\n", string);
 	strncpy(AddedPartialDosString, string, strlen(string));
 	
 }

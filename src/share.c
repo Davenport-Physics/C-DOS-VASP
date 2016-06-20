@@ -53,7 +53,7 @@ void CheckForNullPointer(void *p, char *message, bool HaltExecution) {
 	
 	if (HaltExecution == TRUE) {
 	
-		printf("Halting Execution\n");
+		printf("Halting Execution.\n");
 		exit(1);
 		
 	}
