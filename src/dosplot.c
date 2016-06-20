@@ -49,9 +49,9 @@ int main(int argc, char **argv)
 	InitializeProgramState();
 	
 	ReadTotalDos();
-	ReadPartialDos();
-	
 	WriteTotalDos();
+	
+	ReadPartialDos();
 	WritePartialDos();
 	
 	CloseDoscarFilePointer();

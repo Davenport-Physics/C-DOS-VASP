@@ -115,13 +115,25 @@ double GetCorrectString(char string[256]) {
 
 	char *position = (char *)memchr(string, 'E', strlen(string));
 	
+	char delimeter = '+';
 	if (position == NULL) {
+		
+		char *temp = (char *)memchr(string, delimeter, strlen(string));
+		if (temp == NULL) {
+		
+			delimeter = '-';
+			
+		}
+		char delimeter_string[1];
+		delimeter_string[0] = delimeter;
 		
 		char buffer[512];
 		char *pointer = strtok(string, "+-");
 		
 		strncpy(buffer, pointer, strlen(pointer));
 		strncat(buffer, "E", 1);
+		strncat(buffer, delimeter_string, 1);
+		
 		pointer = strtok(NULL, "+-");
 		strncat(buffer, pointer, strlen(pointer));
 		

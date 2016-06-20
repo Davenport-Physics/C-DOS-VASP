@@ -69,9 +69,14 @@ void ReadPartialDos() {
 	for (z = 0;z < TotalNumberOfAtoms;z++) {
 		
 		fgets(buffer, 256, DOSCAR_fp);
-		for (y = 0;y < IterationsPerSection-1;y++) {
+		if (z == 1) {
+		
+			printf("buffer = %s", buffer);
 			
-			fscanf(DOSCAR_fp, "%lf%s%s%s%s%s%s",
+		}
+		for (y = 0;y < IterationsPerSection;y++) {
+			
+			fscanf(DOSCAR_fp, "%lf%s%s%s%s%s%s\n",
 					&PartialDosArray[z][y][0],
 					TempStrings[1],
 					TempStrings[2],
