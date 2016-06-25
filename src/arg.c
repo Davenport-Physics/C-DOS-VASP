@@ -26,11 +26,12 @@
 #include <string.h>
 
 #include "arg.h"
-#include "share.h"
 
-#define ARGLISTLENGTH 1
+#define ARGLISTLENGTH 3
 
 static void arg_add(int argc, char *argv[], int index);
+static void arg_skip_total_output(int argc, char *argv[], int index);
+static void arg_skip_partial_output(int argc, char *argv[], int index);
 static void SetAddedPartialDosString(char *string);
 
 static int *PartialList       = NULL;
@@ -38,8 +39,13 @@ static int  PartialListLength = 0;
 
 static char *AddedPartialDosString = NULL;
 
+static bool SkipTotalOutput   = FALSE;
+static bool SkipPartialOutput = FALSE;
+
 static const StringFunction ArgList[ARGLISTLENGTH] = 
-{{"-add", &arg_add}};
+{{"-add", &arg_add},
+ {"-skipt", &arg_skip_total_output},
+ {"-skipp", &arg_skip_partial_output}};
 
 
 void ParseArgs(int argc, char *argv[]) {
@@ -113,6 +119,30 @@ static void arg_add(int argc, char *argv[], int index) {
 		PartialList[i] = (start+i);
 		
 }
+
+static void arg_skip_total_output(int argc, char *argv[], int index) {
+	
+	SkipTotalOutput = TRUE;
+	
+}
+
+static void arg_skip_partial_output(int argc, char *argv[], int index) {
+	
+	SkipPartialOutput = TRUE;
+	
+}
+
+bool GetSkipTotalOutput() {
+	
+	return SkipTotalOutput;
+	
+}
+bool GetSkipPartialOutput() {
+	
+	return SkipPartialOutput;
+	
+}
+
 static void SetAddedPartialDosString(char *string) {
 	
 	strncpy(AddedPartialDosString, string, strlen(string));

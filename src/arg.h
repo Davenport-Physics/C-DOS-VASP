@@ -25,12 +25,17 @@
 #ifndef ARG_H
 #define ARG_H
 
+#include "share.h"
+
 void ParseArgs(int argc, char *argv[]);
 
 int *GetPartialList();
 int GetPartialListLength();
 
 char *GetAddedPartialDosString();
+
+bool GetSkipTotalOutput();
+bool GetSkipPartialOutput();
 
 void free_ArgResources();
 
