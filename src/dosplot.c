@@ -65,10 +65,18 @@ int main(int argc, char **argv)
 static void RunProgram() {
 
 	ReadTotalDos();
-	WriteTotalDos();
+	if (GetSkipTotalOutput() == FALSE) {
+		
+		WriteTotalDos();
+		
+	}
 	
 	ReadPartialDos();
-	WritePartialDos();
+	if (GetSkipPartialOutput() == FALSE) {
+		
+		WritePartialDos();
+		
+	}
 	
 	if (GetPartialListLength() > 0) {
 		
